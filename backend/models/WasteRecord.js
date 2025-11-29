@@ -91,7 +91,7 @@ export class WasteRecord {
        FROM waste_records
        WHERE user_id = ? AND entry_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
        GROUP BY DATE_FORMAT(entry_date, '%Y-%m-%d')
-       ORDER BY entry_date`,
+       ORDER BY DATE_FORMAT(entry_date, '%Y-%m-%d')`,
       [userId]
     );
     return rows;
