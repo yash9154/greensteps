@@ -1,0 +1,66 @@
+.waste-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.waste-container h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--dark-green);
+}
+
+.waste-form {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.records-table {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th {
+  background-color: var(--light-green);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--dark-green);
+  border-bottom: 2px solid var(--primary-green);
+}
+
+table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+table tbody tr:hover {
+  background-color: var(--bg-light);
+}
+
+.pagination {
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  table {
+    font-size: 0.875rem;
+  }
+
+  table th, table td {
+    padding: 0.5rem;
+  }
+
+  .records-table {
+    overflow-x: auto;
+  }
+}

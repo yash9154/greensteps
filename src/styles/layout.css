@@ -1,0 +1,131 @@
+.header {
+  background-color: white;
+  border-bottom: 2px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-brand h1 {
+  font-size: 1.5rem;
+  color: var(--dark-green);
+}
+
+.header-right {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.user-name {
+  color: var(--text-gray);
+}
+
+.sidebar {
+  background-color: white;
+  border-right: 2px solid var(--border-color);
+  width: 250px;
+  min-height: calc(100vh - 70px);
+  position: sticky;
+  top: 70px;
+  overflow-y: auto;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 1.5rem 0;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: var(--text-gray);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-link:hover {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+}
+
+.nav-link.active {
+  background-color: var(--light-green);
+  color: var(--dark-green);
+  border-left-color: var(--primary-green);
+  font-weight: 600;
+}
+
+.layout-wrapper {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.layout-header {
+  flex-shrink: 0;
+}
+
+.layout-body {
+  display: flex;
+  flex: 1;
+}
+
+.layout-sidebar {
+  flex-shrink: 0;
+}
+
+.layout-main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .layout-body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    border-right: none;
+    border-bottom: 2px solid var(--border-color);
+    position: relative;
+    top: 0;
+  }
+
+  .nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+  }
+
+  .nav-link {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-bottom: 3px solid transparent;
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .nav-link.active {
+    border: none;
+    border-bottom: 3px solid var(--primary-green);
+  }
+
+  .layout-main {
+    padding: 1rem;
+  }
+}
