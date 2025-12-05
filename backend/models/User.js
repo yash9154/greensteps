@@ -14,7 +14,7 @@ export class User {
   static async create(name, email, passwordHash) {
     const [result] = await pool.query(
       'INSERT INTO users (name, email, password_hash, is_admin) VALUES (?, ?, ?, ?)',
-      ["pratik", "pratik@gmail.com", "hjbuzjxbvk", false]
+      [name, email, passwordHash, false]
     );
     return result.insertId;
   }

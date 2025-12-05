@@ -27,12 +27,65 @@ export const Signup = () => {
     setLoading(true);
 
     try {
+      console.log('🔐 Attempting signup with:', { 
+        name: formData.name, 
+        email: formData.email 
+      });
+      
+      // Client-side validation
+      if (!formData.name || !formData.email || !formData.password) {
+        setError('All fields are required');
+        setLoading(false);
+        return;
+      }
+
+      if (formData.password.length < 8) {
+        setError('Password must be at least 8 characters');
+        setLoading(false);
+        return;
+      }
+
+      if (!/[A-Z]/.test(formData.password)) {
+        setError('Password must contain uppercase letter');
+        setLoading(false);
+        return;
+      }
+
+      if (!/[a-z]/.test(formData.password)) {
+        setError('Password must contain lowercase letter');
+        setLoading(false);
+        return;
+      }
+
+      if (!/[0-9]/.test(formData.password)) {
+        setError('Password must contain number');
+        setLoading(false);
+        return;
+      }
+
+      if (formData.password !== formData.confirmPassword) {
+        setError('Passwords do not match');
+        setLoading(false);
+        return;
+      }
+
       const response = await authAPI.signup(formData);
+      console.log('✅ Signup successful:', response.data);
+      
       const { user, accessToken, refreshToken } = response.data;
       login(user, accessToken, refreshToken);
+      console.log('✅ Token saved, navigating to dashboard');
+      
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Signup failed');
+      console.error('❌ Signup error:', err);
+      const errorMessage = err.response?.data?.error || err.message || 'Signup failed';
+      console.error('📍 Error details:', {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -90,7 +143,7 @@ export const Signup = () => {
               required
             />
           </div>
-          <button onSubmit={handleSubmit} type="submit" className="btn-primary" disabled={loading}>
+          <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>

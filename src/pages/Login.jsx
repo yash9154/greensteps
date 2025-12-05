@@ -18,12 +18,31 @@ export const Login = () => {
     setLoading(true);
 
     try {
+      console.log('🔐 Attempting login with:', { email });
+      
+      if (!email || !password) {
+        setError('Email and password are required');
+        setLoading(false);
+        return;
+      }
+
       const response = await authAPI.login({ email, password });
+      console.log('✅ Login successful:', response.data);
+      
       const { user, accessToken, refreshToken } = response.data;
       login(user, accessToken, refreshToken);
+      console.log('✅ Token saved, navigating to dashboard');
+      
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
+      console.error('❌ Login error:', err);
+      const errorMessage = err.response?.data?.error || err.message || 'Login failed';
+      console.error('📍 Error details:', {
+        status: err.response?.status,
+        data: err.response?.data,
+        message: err.message
+      });
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

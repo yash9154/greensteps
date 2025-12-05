@@ -34,7 +34,7 @@ export class Reward {
   static async awardPoints(userId, points, reason) {
     // Record in points_history
     await pool.query(
-      'INSERT INTO points_history (user_id, change, reason) VALUES (?, ?, ?)',
+      'INSERT INTO points_history (user_id, points_change, reason) VALUES (?, ?, ?)',
       [userId, points, reason]
     );
 

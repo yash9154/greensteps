@@ -16,12 +16,19 @@ export const Header = () => {
     <header className="header">
       <div className="header-container">
         <div className="header-brand">
-          <h1>🌱 GreenSteps</h1>
+          <span className="brand-icon">🌱</span>
+          <h1>GreenSteps</h1>
         </div>
         <div className="header-right">
           {user && (
             <>
-              <span className="user-name">Hi, {user.name}!</span>
+              <div className="header-user-info">
+                <span className="header-greeting">Welcome back,</span>
+                <span className="header-user-name">{user.name.split(' ')[0]}</span>
+              </div>
+              {user.isAdmin && (
+                <div className="admin-badge">👑 Admin</div>
+              )}
               <button className="btn-logout" onClick={handleLogout}>
                 Logout
               </button>
