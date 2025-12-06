@@ -76,7 +76,7 @@ export const Signup = () => {
       login(user, accessToken, refreshToken);
       console.log('✅ Token saved, navigating to dashboard');
       
-      navigate('/dashboard');
+      navigate('/login');
     } catch (err) {
       console.error('❌ Signup error:', err);
       const errorMessage = err.response?.data?.error || err.message || 'Signup failed';

@@ -41,7 +41,7 @@ export const Home = () => {
             ) : (
               <>
                 <button
-                  className="btn btn-outline"
+                  className="btn  login-btn"
                   onClick={() => navigate('/login')}
                 >
                   Login
@@ -60,7 +60,7 @@ export const Home = () => {
 
       {/* Hero Section */}
       <section className="hero-section">
-        <div className="hero-content">
+        <div className="hero-content" >
           <div className="hero-text">
             <h1 className="hero-title">
               <span className="app-name">GreenSteps</span>
@@ -306,20 +306,7 @@ export const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
-        <div className="cta-content">
-          <h2>Ready to Make a Difference?</h2>
-          <p>Join the zero-waste lifestyle movement. Start tracking today and become part of the solution.</p>
-          {!isLoggedIn && (
-            <button
-              className="btn btn-lg btn-primary"
-              onClick={() => navigate('/signup')}
-            >
-              Get Started Now 🌍
-            </button>
-          )}
-        </div>
-      </section>
+   
 
       {/* Footer */}
       <footer className="home-footer">
@@ -330,7 +317,7 @@ export const Home = () => {
           </div>
           <div className="footer-section">
             <h4>Features</h4>
-            <ul>
+            <ul class="footer-links">
               <li><a href="#features">Waste Tracking</a></li>
               <li><a href="#features">Rewards System</a></li>
               <li><a href="#features">Analytics</a></li>
@@ -339,7 +326,7 @@ export const Home = () => {
           </div>
           <div className="footer-section">
             <h4>Quick Links</h4>
-            <ul>
+            <ul class="footer-links">
               <li><a href="#about">About Us</a></li>
               <li><a href="#features">Features</a></li>
               <li><a href="/privacy">Privacy Policy</a></li>
