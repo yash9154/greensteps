@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS rewards (
 CREATE TABLE IF NOT EXISTS points_history (
   ph_id INT AUTO_INCREMENT PRIMARY KEY,
   user_id INT NOT NULL,
-  change INT NOT NULL,
+  points_change INT NOT NULL,
   reason VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,

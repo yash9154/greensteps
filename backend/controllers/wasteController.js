@@ -1,5 +1,6 @@
 import { WasteRecord } from '../models/WasteRecord.js';
 import { WasteType } from '../models/WasteType.js';
+import { Reward } from '../models/Reward.js';
 import { validateWasteEntry } from '../utils/validators.js';
 
 export const addWaste = async (req, res) => {
@@ -25,9 +26,27 @@ export const addWaste = async (req, res) => {
       notes || ''
     );
 
+    // Points logic: 2 points per kg, round to nearest integer
+    const qty = Number.parseFloat(quantity) || 0;
+    const points = Math.round(qty * 2);
+
+    let rewardResult = null;
+    try {
+      // Ensure reward row exists for user
+      await Reward.initializeReward(userId);
+      if (points > 0) {
+        rewardResult = await Reward.awardPoints(userId, points, `Waste entry #${recordId}`);
+      }
+    } catch (err) {
+      console.error('Reward awarding error:', err);
+      // Do not fail the waste creation if reward awarding fails; just log it
+    }
+
     res.status(201).json({
       message: 'Waste entry added successfully',
       recordId,
+      pointsAwarded: points,
+      reward: rewardResult,
     });
   } catch (error) {
     console.error('Add waste error:', error);
@@ -38,8 +57,8 @@ export const addWaste = async (req, res) => {
 export const getWasteList = async (req, res) => {
   try {
     const userId = req.userId;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
+    const page = Number.parseInt(req.query.page, 10) || 1;
+    const limit = Number.parseInt(req.query.limit, 10) || 20;
     const offset = (page - 1) * limit;
 
     const records = await WasteRecord.findByUserId(userId, limit, offset);

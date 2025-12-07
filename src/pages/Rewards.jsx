@@ -14,8 +14,32 @@ export const Rewards = () => {
     const fetchRewards = async () => {
       try {
         const response = await rewardsAPI.getRewards();
-        setReward(response.data.reward);
-        setPointsHistory(response.data.pointsHistory);
+        const respReward = response.data.reward || null;
+        const respHistory = response.data.pointsHistory || [];
+
+        setReward(respReward);
+
+        // Normalize points history entries to use `change` field used by UI.
+        const normalizeEntry = (e) => ({
+          change: e.change ?? e.points ?? e.points_change ?? 0,
+          reason: e.reason ?? e.Reason ?? 'Points update',
+          created_at: e.created_at ?? e.createdAt ?? e.createdAt ?? new Date().toISOString(),
+        });
+
+        if (Array.isArray(respHistory) && respHistory.length > 0) {
+          setPointsHistory(respHistory.map(normalizeEntry));
+        } else if (respReward) {
+          // If no points_history rows, build a synthetic history entry from rewards table
+          setPointsHistory([
+            {
+              change: respReward.points ?? 0,
+              reason: 'Total points (from rewards table)',
+              created_at: respReward.awardedOn ?? respReward.awarded_on ?? new Date().toISOString(),
+            },
+          ]);
+        } else {
+          setPointsHistory([]);
+        }
       } catch (err) {
         setError(err.response?.data?.error || 'Failed to load rewards');
       } finally {

@@ -4,7 +4,7 @@ import { authAPI } from '../services/api';
 import { useAuth } from '../utils/useAuth';
 import '../styles/auth.css';
 
-export const Login = () => {
+export const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -18,8 +18,6 @@ export const Login = () => {
     setLoading(true);
 
     try {
-      console.log('🔐 Attempting login with:', { email });
-      
       if (!email || !password) {
         setError('Email and password are required');
         setLoading(false);
@@ -27,21 +25,19 @@ export const Login = () => {
       }
 
       const response = await authAPI.login({ email, password });
-      console.log('✅ Login successful:', response.data);
-      
       const { user, accessToken, refreshToken } = response.data;
-      login(user, accessToken, refreshToken);
-      console.log('✅ Token saved, navigating to dashboard');
-      
-      navigate('/dashboard');
+
+      // Check admin flag
+      if (user?.isAdmin) {
+        // Persist login and redirect to admin dashboard
+        login(user, accessToken, refreshToken);
+        navigate('/admin');
+      } else {
+        setError('Invalid admin credentials');
+      }
     } catch (err) {
-      console.error('❌ Login error:', err);
+      console.error('Admin login error:', err);
       const errorMessage = err.response?.data?.error || err.message || 'Login failed';
-      console.error('📍 Error details:', {
-        status: err.response?.status,
-        data: err.response?.data,
-        message: err.message
-      });
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -52,7 +48,7 @@ export const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h1>🌱 GreenSteps</h1>
-        <h2>Login</h2>
+        <h2>Admin Login</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
@@ -76,13 +72,15 @@ export const Login = () => {
             />
           </div>
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Logging in...' : 'Login as Admin'}
           </button>
         </form>
         <p>
-          Don't have an account? <Link to="/signup">Sign up here</Link>
+          Not an admin? <Link to="/login">Regular login</Link>
         </p>
       </div>
     </div>
   );
 };
+
+export default AdminLogin;

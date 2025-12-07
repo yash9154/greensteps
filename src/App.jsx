@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
+import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Signup } from './pages/Signup';
 import { Dashboard } from './pages/Dashboard';
@@ -11,6 +12,7 @@ import { AddWaste } from './pages/AddWaste';
 import { WasteList } from './pages/WasteList';
 import { Rewards } from './pages/Rewards';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminLogin } from './pages/AdminLogin';
 import './styles/global.css';
 
 function AppLayout({ children }) {
@@ -34,6 +36,7 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
@@ -92,8 +95,9 @@ function App() {
             }
           />
 
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
     </Router>
