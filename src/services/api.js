@@ -58,6 +58,7 @@ export const dashboardAPI = {
   getAdminStats: (limit = 100, offset = 0) =>
     axiosInstance.get(`/dashboard/admin/stats?limit=${limit}&offset=${offset}`),
   exportWasteCsv: () => axiosInstance.get('/dashboard/admin/export-csv'),
+  getTips: () => axiosInstance.get('/dashboard/tips'),
 };
 
 // Rewards APIs

@@ -47,6 +47,12 @@ export const Home = () => {
                   Login
                 </button>
                 <button
+                  className="btn btn-secondary admin-login-btn"
+                  onClick={() => navigate('/admin-login')}
+                >
+                  Admin Login
+                </button>
+                <button
                   className="btn btn-primary"
                   onClick={() => navigate('/signup')}
                 >

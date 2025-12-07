@@ -233,7 +233,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
-  background: linear-gradient(135deg, rgba(46, 125, 50, 0.05) 0%, rgba(67, 160, 71, 0.05) 100%);
+  background-color:rgb(255, 255, 255);
   padding: 2.5rem;
   border-radius: 12px;
   border: 1px solid rgba(46, 125, 50, 0.1);
@@ -241,19 +241,20 @@
 
 .stat-item {
   text-align: center;
+  
 }
 
 .stat-number {
   font-size: 2.5rem;
-  font-weight: 800;
-  color: #2e7d32;
+  font-weight: bold;
+  color: #07b4ff !important;
   margin-bottom: 0.5rem;
 }
 
 .stat-label {
   font-size: 0.95rem;
   color: #555;
-  font-weight: 600;
+  font-weight: bold;
 }
 
 /* Features Section */
@@ -458,7 +459,11 @@ color:white;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 2rem;
 }
-
+.admin-login-btn{
+  background-color:transparent !important;
+  color:white !important;
+  border:2px solid white !important;
+}
 .feature-card {
   background: linear-gradient(135deg, #f5f5f5 0%, #f9f9f9 100%);
   padding: 2rem;

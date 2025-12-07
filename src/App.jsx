@@ -12,6 +12,7 @@ import { AddWaste } from './pages/AddWaste';
 import { WasteList } from './pages/WasteList';
 import { Rewards } from './pages/Rewards';
 import { AdminDashboard } from './pages/AdminDashboard';
+import { AdminLogin } from './pages/AdminLogin';
 import './styles/global.css';
 
 function AppLayout({ children }) {
@@ -93,6 +94,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route path="/admin-login" element={<AdminLogin />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
