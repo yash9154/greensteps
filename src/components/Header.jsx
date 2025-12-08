@@ -20,20 +20,26 @@ export const Header = () => {
           <h1>GreenSteps</h1>
         </div>
         <div className="header-right">
-          {user && (
+          {user ? (
             <>
               <div className="header-user-info">
-                <span className="header-greeting">Welcome back,</span>
-                <span className="header-user-name">{user.name.split(' ')[0]}</span>
+                <span className="header-greeting">Welcome back{', '}</span>
+                {(() => {
+                  // Safely derive a first name and avoid showing '0' or other falsy placeholders
+                  const rawName = user?.name ? String(user.name).trim() : '';
+                  if (!rawName || rawName === '0') return null;
+                  const first = rawName.split(/\s+/)[0];
+                  return <span className="header-user-name">{first}</span>;
+                })()}
               </div>
-              {user.isAdmin && (
+              {user.isAdmin ? (
                 <div className="admin-badge">👑 Admin</div>
-              )}
+              ) : null}
               <button className="btn-logout" onClick={handleLogout}>
                 Logout
               </button>
             </>
-          )}
+          ) : null}
         </div>
       </div>
     </header>

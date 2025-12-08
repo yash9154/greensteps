@@ -13,13 +13,11 @@ export const Dashboard = () => {
       try {
         const response = await dashboardAPI.getDashboardStats();
         setStats(response.data);
-        // fetch AI tips after stats load
-        try {
-          const tipsResp = await dashboardAPI.getTips();
-          setTips(tipsResp.data.tips || []);
-        } catch (tErr) {
-          console.warn('Failed to load tips:', tErr?.response?.data || tErr.message || tErr);
-        }
+        // fetch AI tips asynchronously so the main dashboard UI isn't blocked
+        dashboardAPI
+          .getTips()
+          .then((tipsResp) => setTips(tipsResp.data.tips || []))
+          .catch((tErr) => console.warn('Failed to load tips:', tErr?.response?.data || tErr.message || tErr));
       } catch (err) {
         setError(err.response?.data?.error || 'Failed to load dashboard');
       } finally {
