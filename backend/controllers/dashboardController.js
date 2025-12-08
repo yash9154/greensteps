@@ -2,6 +2,7 @@ import { WasteRecord } from '../models/WasteRecord.js';
 import { Reward } from '../models/Reward.js';
 import axios from 'axios';
 import pool from '../config/database.js';
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Simple in-memory cache for tips: Map<userId, { tips: string[], expiresAt: number }>
 const tipsCache = new Map();
@@ -111,63 +112,87 @@ export const generateTips = async (req, res) => {
     let tipsText = null;
 
     // Prefer an explicit GEMINI_API_URL if provided and not a placeholder
-    const isPlaceholderUrl = apiUrl && /example\.com|placeholder/i.test(apiUrl);
+    // const     = apiUrl // && /example\.com|placeholder/i.test(apiUrl);
 
-    if (apiKey && !isPlaceholderUrl) {
+    if (apiKey) {
+      // First try using the official Google Generative AI client if available
       try {
-        let response = null;
+        try {
+          const client = new GoogleGenerativeAI(apiKey);
+          const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+          const model = client.getGenerativeModel({ model: modelName });
 
-        // If a custom API URL is provided, call it directly (allow advanced users)
-        if (apiUrl) {
-          response = await axios.post(
-            apiUrl,
-            { prompt, max_tokens: 200 },
-            {
+          const result = await model.generateContent(prompt);
+          // Some client versions return a promise or object with response()
+          const responseObj = result?.response || result;
+          // normalize and extract text
+          let text = null;
+          if (responseObj?.text) {
+            text = typeof responseObj.text === 'function' ? await responseObj.text() : responseObj.text;
+          } else if (responseObj?.response) {
+            const r = await responseObj.response;
+            if (r?.text) text = typeof r.text === 'function' ? await r.text() : r.text;
+          } else if (result?.response) {
+            const r = await result.response;
+            if (r?.text) text = typeof r.text === 'function' ? await r.text() : r.text;
+          }
+
+          if (text) {
+            tipsText = text;
+          } else if (typeof result === 'string') {
+            tipsText = result;
+          }
+        } catch (clientErr) {
+          console.warn('GoogleGenerativeAI client failed, falling back to REST axios call:', clientErr?.message || clientErr);
+          // Fallback to REST approach below
+          let response = null;
+          if (apiUrl) {
+            response = await axios.post(
+              apiUrl,
+              { prompt, max_tokens: 200 },
+              {
+                headers: {
+                  Authorization: `Bearer ${apiKey}`,
+                  'Content-Type': 'application/json',
+                },
+                timeout: 15000,
+              }
+            );
+          } else {
+            const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+            const googleUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+            const body = {
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: prompt,
+                    },
+                  ],
+                },
+              ],
+              temperature: 0.2,
+              maxOutputTokens: 200,
+            };
+            response = await axios.post(googleUrl, body, {
               headers: {
-                Authorization: `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey,
               },
               timeout: 15000,
-            }
-          );
-        } else {
-          // Default to Google Generative Language REST endpoint using the API key
-          const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-          const googleUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
+            });
+          }
 
-          const body = {
-            contents: [
-              {
-                parts: [
-                  {
-                    text: prompt,
-                  },
-                ],
-              },
-            ],
-            temperature: 0.2,
-            maxOutputTokens: 200,
-          };
-
-          response = await axios.post(googleUrl, body, {
-            headers: {
-              'Content-Type': 'application/json',
-              'x-goog-api-key': apiKey,
-            },
-            timeout: 15000,
-          });
+          const d = response?.data || {};
+          tipsText =
+            d?.candidates?.[0]?.content?.map((c) => (c?.parts || []).map((p) => p.text).join('\n')).join('\n') ||
+            d?.candidates?.[0]?.output?.map((o) => o?.content?.map((c) => c?.parts?.map((p) => p.text).join('')).join('\n')).join('\n') ||
+            d?.outputs?.[0]?.content?.[0]?.text ||
+            d?.text ||
+            d?.output ||
+            d?.choices?.[0]?.text ||
+            null;
         }
-
-        // Try several common response shapes to extract text
-        const d = response?.data || {};
-        tipsText =
-          d?.candidates?.[0]?.content?.map((c) => (c?.parts || []).map((p) => p.text).join('')).join('\n') ||
-          d?.candidates?.[0]?.output?.map((o) => o?.content?.map((c) => c?.parts?.map((p) => p.text).join('')).join('\n')).join('\n') ||
-          d?.outputs?.[0]?.content?.[0]?.text ||
-          d?.text ||
-          d?.output ||
-          d?.choices?.[0]?.text ||
-          null;
       } catch (error_) {
         console.error('AI request failed:', error_?.response?.data || error_.message || error_);
         // Continue to local fallback

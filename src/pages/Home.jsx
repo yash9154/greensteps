@@ -69,7 +69,7 @@ export const Home = () => {
         <div className="hero-content" >
           <div className="hero-text">
             <h1 className="hero-title">
-              <span className="app-name">GreenSteps</span>
+              <span className="app-name">GreenSteps </span>
               <span className="tagline">Zero Waste Lifestyle Tracker</span>
             </h1>
             <p className="hero-description">

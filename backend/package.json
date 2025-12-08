@@ -9,17 +9,22 @@
     "dev": "nodemon server.js",
     "db:init": "node scripts/initDatabase.js"
   },
-  "keywords": ["sustainability", "waste-tracking", "rewards"],
+  "keywords": [
+    "sustainability",
+    "waste-tracking",
+    "rewards"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "mysql2": "^3.6.0",
+    "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "dotenv": "^16.3.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-validator": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.0",
     "nodemailer": "^6.9.6"
   },
   "devDependencies": {

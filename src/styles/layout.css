@@ -161,6 +161,7 @@
 
 .nav-text {
   flex: 1;
+  color:rgb(20, 20, 20);
 }
 
 .nav-link:hover {
